@@ -133,11 +133,6 @@
         return " scale(" + s + ") ";
     };
 
-    // `perspective` builds a perspective transform string for given data.
-    var perspective = function( p ) {
-        return " perspective(" + p + "px) ";
-    };
-
     // `getElementFromHash` returns an element located by id from hash part of
     // window location.
     var getElementFromHash = function() {
@@ -205,9 +200,7 @@
         height: 768,
         maxScale: 1,
         minScale: 0,
-
         perspective: 1000,
-
         transitionDuration: 1000
     };
 
@@ -384,7 +377,8 @@
             css( root, {
                 top: "50%",
                 left: "50%",
-                transform: perspective( config.perspective / windowScale ) + scale( windowScale )
+                perspective: ( config.perspective / windowScale ) + "px",
+                transform: scale( windowScale )
             } );
             css( canvas, rootStyles );
 
@@ -504,9 +498,13 @@
             // that both of them are finished.
             css( root, {
 
+                // For IE 11 support we must specify perspective independent
+                // of transform.
+                perspective: ( config.perspective / targetScale ) + "px",
+
                 // To keep the perspective look similar for different scales
                 // we need to 'scale' the perspective, too
-                transform: perspective( config.perspective / targetScale ) + scale( targetScale ),
+                transform: scale( targetScale ),
                 transitionDuration: duration + "ms",
                 transitionDelay: ( zoomin ? delay : 0 ) + "ms"
             } );
